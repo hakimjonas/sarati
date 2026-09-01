@@ -60,41 +60,49 @@ type XmlDocument = (
 val defaultXmlVersion: String = "1.0"
 val defaultXmlEncoding: Option[String] = Some("UTF-8")
 
-/** Parser behavior switches: whether inter-element whitespace becomes text nodes, and whether
-  * comments, processing instructions, and entity references survive into the AST.
+/** Parser behavior switches: whether inter-element whitespace becomes text nodes, whether comments,
+  * processing instructions, and entity references survive into the AST, and whether a `<!DOCTYPE>`
+  * declaration (with its internal subset) is parsed.
   */
 type XmlConfig = (
   preserveWhitespace: Boolean,
   parseComments: Boolean,
   parseProcessingInstructions: Boolean,
-  expandEntities: Boolean
+  expandEntities: Boolean,
+  resolveDtd: Boolean
 )
 
-/** Trims whitespace text nodes, keeps comments, PIs, and entity expansion. */
+/** Trims whitespace text nodes, keeps comments, PIs, and entity expansion; resolves DTD internal
+  * subsets.
+  */
 val defaultXmlConfig: XmlConfig = (
   preserveWhitespace = false,
   parseComments = true,
   parseProcessingInstructions = true,
-  expandEntities = true
+  expandEntities = true,
+  resolveDtd = true
 )
 
-/** Preserves whitespace text nodes and disables comments, PIs, and entity expansion. */
+/** Preserves whitespace text nodes and disables comments, PIs, entity expansion, and DTD parsing.
+  */
 val strictXmlConfig: XmlConfig = (
   preserveWhitespace = true,
   parseComments = false,
   parseProcessingInstructions = false,
-  expandEntities = false
+  expandEntities = false,
+  resolveDtd = false
 )
 
-/** Whitespace preserved while comments, processing instructions, and entity expansion stay enabled
-  * — the combination XPath evaluation needs, since string-value and `text()` semantics depend on
-  * whitespace text nodes and node tests must see comments and PIs.
+/** Whitespace preserved while comments, processing instructions, entity expansion, and DTD parsing
+  * stay enabled — the combination XPath evaluation needs, since string-value and `text()` semantics
+  * depend on whitespace text nodes and node tests must see comments and PIs.
   */
 val xpathXmlConfig: XmlConfig = (
   preserveWhitespace = true,
   parseComments = true,
   parseProcessingInstructions = true,
-  expandEntities = true
+  expandEntities = true,
+  resolveDtd = true
 )
 
 /** The five predefined entities. */
