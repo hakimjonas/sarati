@@ -35,6 +35,14 @@ jobs:
           # would not start release.yml.
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
+          # Never cut a tag for a commit that already carries one. This also
+          # prevents two tags from pointing at the same commit, which would make
+          # sbt-dynver's `git describe` ambiguous about the version.
+          if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
+            echo "HEAD is already tagged — nothing to do."
+            exit 0
+          fi
+
           latest=$(git ls-remote --tags --sort=-v:refname origin 'refs/tags/v*' \
             | grep -v '\^{}' | head -n 1 | sed 's|.*refs/tags/||')
 
