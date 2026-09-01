@@ -23,6 +23,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Do not persist the GITHUB_TOKEN: the tag push below authenticates with
+          # RELEASE_TOKEN, and a persisted token would override those credentials.
+          persist-credentials: false
 
       - name: Compute and push the next alpha tag
         env:
@@ -65,10 +68,6 @@ jobs:
           git config user.name "sarati-release-bot"
           git config user.email "release@sarati.local"
           git tag "${newtag}"
-          # actions/checkout persists an Authorization extraheader carrying the
-          # read-only GITHUB_TOKEN; it overrides the URL-embedded RELEASE_TOKEN
-          # below, so clear it before pushing.
-          git config --local --unset-all http.https://github.com/.extraheader
           git push "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/${newtag}"
 
           echo "Pushed ${newtag} — release.yml will now build, test, and publish it."
