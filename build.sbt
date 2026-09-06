@@ -59,7 +59,16 @@ lazy val root = project
     // being brittle against deterministic-test noise.
     coverageMinimumStmtTotal := 70.0,
     coverageMinimumBranchTotal := 60.0,
-    coverageFailOnMinimum := true
+    coverageFailOnMinimum := true,
+    // Relocate scoverage's measurement directory out of `target/out`: sbt 2 prunes
+    // untracked files under its managed output tree between tasks, and the writes
+    // race that prune — instrumented code writes measurements from forked test
+    // JVMs, and from macro expansions of `derives SaratiCodec` running in-process
+    // during test compilation. A prune landing between two writers deletes the
+    // directory under them and the expansion or test dies with
+    // FileNotFoundException inside scoverage's Invoker. Outside `target/out` the
+    // directory is not managed (nor pruned) by sbt.
+    scoverage.ScoverageKeys.coverageDataDir := (ThisBuild / baseDirectory).value / "target" / "scoverage-data"
   )
 
 // JMH benchmarks against the codec (also the A/B pressure-test rig).
