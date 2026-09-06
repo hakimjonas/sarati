@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **License** — moved from GPL-3.0-or-later to LGPL-3.0-or-later across the LICENSE file
+  and build metadata. LGPL keeps the copyleft protection of the source while permitting
+  applications to link and use the library without license obligations on application code.
+
 ## [1.0.0-alpha] - 2026-09
 
 Initial public release.

@@ -22,7 +22,7 @@ ThisBuild / publishTo := {
 ThisBuild / publishMavenStyle := true
 ThisBuild / pomIncludeRepository := { _ => false }
 
-ThisBuild / licenses := Seq("GPL-3.0-or-later" -> uri("https://www.gnu.org/licenses/gpl-3.0.txt"))
+ThisBuild / licenses := Seq("LGPL-3.0-or-later" -> uri("https://www.gnu.org/licenses/lgpl-3.0.txt"))
 ThisBuild / homepage := Some(uri("https://github.com/hakimjonas/sarati"))
 ThisBuild / description := "Binary codec library and structural AST layer for Scala 3, with an XPath 1.0 evaluator."
 ThisBuild / developers := List(
