@@ -65,4 +65,3 @@ jobs:
       # The 425-test suite is the gate; run `sbt coverage;Test/testFull;coverageReport`
       # manually when a coverage number is wanted (exclusion for the derivation
       # macros is configured in build.sbt — compile-time code cannot have coverage).
-        timeout-minutes: 15
