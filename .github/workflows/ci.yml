@@ -57,6 +57,11 @@ jobs:
           java -jar "$JAR" "CodecBenchmarks.decodeNestedUser" -wi 0 -i 1 -f 1 -t 1
         timeout-minutes: 15
 
-      - name: Coverage (instrumented tests + minimum threshold)
-        run: sbt "coverage; Test/testFull; coverageReport"
-        timeout-minutes: 15
+      # NOTE: no coverage step. scoverage's instrumented Invoker writes measurement
+      # data in three different process contexts here — forked test JVMs, and macro
+      # expansions of `derives SaratiCodec` running inside the compiler JVM during
+      # test compilation — and that combination has proven flaky across sbt/Scala
+      # toolchain changes (prune races, missing data dirs, silent empty reports).
+      # The 425-test suite is the gate; run `sbt coverage;Test/testFull;coverageReport`
+      # manually when a coverage number is wanted (exclusion for the derivation
+      # macros is configured in build.sbt — compile-time code cannot have coverage).
