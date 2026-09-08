@@ -130,4 +130,11 @@ object JsonEncoders {
           finish = entries => JsonValue.Object(entries.toMap)
         )
     }
+
+  given [E <: java.lang.Enum[E]] => Encoder[E, JsonValue] = new Encoder[E, JsonValue] {
+    def encode(value: E): JsonValue = JsonValue.Str(value.name().nn)
+  }
+
+  inline given [E <: scala.reflect.Enum] => (m: scala.deriving.Mirror.SumOf[E]) => Encoder[E, JsonValue] =
+    Encoder.derived[E, JsonValue]
 }
