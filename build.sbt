@@ -52,7 +52,7 @@ lazy val root = project
     scalacOptions ++= sharedScalacOptions,
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % "1.3.6" % Test,
-      "org.scalameta" %% "munit-scalacheck" % "1.3.0" % Test
+      "org.scalameta" %% "munit-scalacheck" % "1.3.1" % Test
     ),
     // Coverage floor: measured 70.69% stmt / 62.32% branch on 2026-08-28 (338 tests).
     // Thresholds sit just under the measured values so regressions fail CI without
