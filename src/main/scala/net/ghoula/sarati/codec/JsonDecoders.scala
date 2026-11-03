@@ -520,6 +520,47 @@ object JsonDecoders {
         }
     }
 
+  given javaEnumJsonDecoder[E <: java.lang.Enum[E]](using ct: scala.reflect.ClassTag[E]): Decoder[JsonValue, E] =
+    new Decoder[JsonValue, E] {
+      def decode(value: JsonValue): Result[DecodeError, E] = value match {
+        case JsonValue.Str(s) =>
+          try {
+            val enumVal = java.lang.Enum
+              .valueOf(ct.runtimeClass.asInstanceOf[Class[E]], s)
+              .nn // scalafix:ok DisableSyntax.asInstanceOf
+            Result.Success(enumVal, 0)
+          } catch {
+            case _: IllegalArgumentException =>
+              Result.Failure(
+                List(
+                  DecodeError.TypeMismatch(
+                    ct.runtimeClass.getSimpleName.nn,
+                    s"String($s) - invalid enum constant",
+                    (line = 1, column = 1, offset = 0)
+                  )
+                ),
+                (line = 1, column = 1, offset = 0)
+              )
+          }
+        case other =>
+          Result.Failure(
+            List(
+              DecodeError.TypeMismatch(
+                "String",
+                jsonValueTypeName(other),
+                (line = 1, column = 1, offset = 0)
+              )
+            ),
+            (line = 1, column = 1, offset = 0)
+          )
+      }
+    }
+
+  inline given scalaEnumJsonDecoder[E <: scala.reflect.Enum](using
+    m: scala.deriving.Mirror.SumOf[E]
+  ): Decoder[JsonValue, E] =
+    Decoder.derived[JsonValue, E]
+
   private def jsonValueTypeName(value: JsonValue): String = value match {
     case JsonValue.Null => "Null"
     case JsonValue.Bool(_) => "Boolean"
